@@ -5,8 +5,14 @@
 
 #include "Box2D/Box2D/Box2D.h"
 
-#pragma comment (lib, "Box2D/libx86/Debug/Box2D.lib")
+#ifdef _RELEASE
 #pragma comment (lib, "Box2D/libx86/Release/Box2D.lib")
+#endif // RELEAS
+
+#ifdef _DEBUG
+#pragma comment (lib, "Box2D/libx86/Debug/Box2D.lib")
+#endif // DEBUG
+
 
 // TODO 1: Include Box 2 header and library
 
@@ -29,23 +35,36 @@ bool ModulePhysics::Start()
 	// - You need init the world in the constructor
 	// - Remember to destroy the world after using it
 
-	b2Vec2 gravity(0.0f, -9.8f);
+	b2Vec2 gravity(0.0f, 0.3f);
 	world = new b2World(gravity);
 
 
 	// TODO 4: Create a a big static circle as "ground"
 
 	b2BodyDef ground;
-	ground.position.Set(10, 7.5);
+	ground.position.Set(PIXELS_TO_METERS(500), PIXELS_TO_METERS(400));
 
 	b2Body* groundBody = world->CreateBody(&ground);
 
 	b2CircleShape groundBox;
-	groundBox.m_radius = 4;
+	groundBox.m_radius = PIXELS_TO_METERS(300);
 
 	groundBody->CreateFixture(&groundBox, 1.0f);
 
+	//---------------------
+	b2BodyDef floor;
+	b2Body* floorBody = nullptr;
+	b2PolygonShape floorShape;
+
+	floor.type = b2_staticBody;
+	floor.position.Set(PIXELS_TO_METERS(0), PIXELS_TO_METERS(SCREEN_HEIGHT));
+
+	floorBody = world->CreateBody(&floor);
 	
+	floorShape.SetAsBox(PIXELS_TO_METERS(1000), PIXELS_TO_METERS(100));
+	
+	floorBody->CreateFixture(&floorShape, 1.0f);
+
 	return true;
 }
 
@@ -78,15 +97,12 @@ update_status ModulePhysics::PostUpdate()
 		b2BodyDef circle;
 		circle.type = b2_dynamicBody;
 
-		int mouse_x = App->input->GetMouseX();
-		int mouse_y = App->input->GetMouseY();
-
-		circle.position.Set(10, 0);
+		circle.position.Set(PIXELS_TO_METERS(App->input->GetMouseX()), PIXELS_TO_METERS(App->input->GetMouseY()));
 
 		b2Body* c = world->CreateBody(&circle);
 
 		b2CircleShape circleBox;
-		circleBox.m_radius = 1;
+		circleBox.m_radius = PIXELS_TO_METERS(rand()%100);
 		b2FixtureDef fixture;
 		fixture.shape = &circleBox;
 		fixture.density = 1.0f;
@@ -116,6 +132,29 @@ update_status ModulePhysics::PostUpdate()
 					b2Vec2 pos = f->GetBody()->GetPosition();
 					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
 				}
+
+				/*case b2Shape::e_polygon:
+				{
+					b2PolygonShape* shape = (b2PolygonShape*)f->GetShape();
+					int32 count = shape->GetVertexCount();
+					b2Vec2 prev = b->GetWorldPoint(shape->GetVertex(0));
+					b2Vec2 v;
+
+					for (int32 i = 0; i < count; i++)
+					{
+						v = b->GetWorldPoint(shape->GetVertex(i));
+
+						if (i > 0)
+						{
+							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 255, 255);
+							prev = v;
+						}
+					}
+
+					v = b->GetWorldPoint(shape->GetVertex(0));
+					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 255, 255);
+				}**/
+
 				break;
 
 				// You will have to add more cases to draw boxes, edges, and polygons ...

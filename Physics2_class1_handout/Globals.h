@@ -8,14 +8,10 @@ void log(const char file[], int line, const char* format, ...);
 
 #define CAP(n) ((n <= 0.0f) ? n=0.0f : (n >= 1.0f) ? n=1.0f : n=n)
 
-#define DEGTORAD 0.0174532925199432957f
-#define RADTODEG 57.295779513082320876f
+#define RAD 10.0f
 
-#define PIXELS_PER_METER 50.0f // if touched change METER_PER_PIXEL too
-#define METER_PER_PIXEL 0.02f // this is 1 / PIXELS_PER_METER !
-
-#define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
-#define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
+#define METERS_TO_PIXELS(n) ((n) * RAD)
+#define PIXELS_TO_METERS(n) ((n) / RAD)
 
 
 
