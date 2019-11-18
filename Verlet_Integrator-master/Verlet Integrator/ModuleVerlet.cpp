@@ -46,9 +46,8 @@ update_status ModuleVerlet::Update()
 	//MYTODO
 	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 	{
-		//App->planet->PrintPlanet&(App->planet->myPlanet);
+		bigPlanetEnabled = true;
 	}
-
 
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN) 
 	{

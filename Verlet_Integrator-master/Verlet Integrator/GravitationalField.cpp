@@ -4,7 +4,7 @@
 #include "Module.h"
 #include "Application.h"
 
-GravitationalField::GravitationalField(Application* app, bool start_enabled = true) : Module(app, start_enabled)
+GravitationalField::GravitationalField(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	bigPlanet = new Planet();
 	smallPlanetObject = new PlanetObject();
@@ -19,7 +19,8 @@ bool GravitationalField::Init()
 	//BIG PLANET SETTING VARS
 	bigPlanet->atmosphere = 4.f;
 	bigPlanet->gravity = 9.806f;
-	bigPlanet->mass = 6.f;
+	bigPlanet->mass = 50.f;
+	bigPlanet->position = { SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5 };
 	///speed and pos = 0
 
 	//SMALL PLANET SETTING VARS
@@ -27,7 +28,8 @@ bool GravitationalField::Init()
 	smallPlanetObject->position = { 1, 0 };
 	smallPlanetObject->speed = 3.f;
 
-	PrintPlanet(bigPlanet);
+	DrawBigPlanet(bigPlanet);
+
 
 	return true;
 }
@@ -42,6 +44,10 @@ update_status GravitationalField::PreUpdate()
 //Update: debug Camera
 update_status GravitationalField::Update()
 {
+	if (App->verlet->bigPlanetEnabled == true)
+	{
+		DrawBigPlanet(bigPlanet);
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -65,9 +71,12 @@ bool GravitationalField::CleanUp()
 //----------------------------
 
 
-void GravitationalField::PrintPlanet(Planet Earth)
+void GravitationalField::DrawBigPlanet(Planet* Earth)
 {
 	//MYTODO
+	
+	App->renderer->DrawCircle(Earth->position.x, Earth->position.y, Earth->mass, 255, 255, 255, 255);
+
 }
 
 

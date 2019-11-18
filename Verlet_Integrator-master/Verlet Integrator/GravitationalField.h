@@ -58,7 +58,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void PrintPlanet(Planet* Earth);
+	void DrawBigPlanet(Planet* Earth);
 
 public:
 	Planet* bigPlanet;
